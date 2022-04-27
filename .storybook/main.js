@@ -1,3 +1,6 @@
+// const custom = require("../node_modules/@vue/cli-service/webpack.config")(null, "development");
+const path = require('path');
+
 module.exports = {
   "stories": [
     "../src/**/*.stories.mdx",
@@ -5,12 +8,8 @@ module.exports = {
   ],
   "addons": [
     "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    '@storybook/preset-scss'
+    "@storybook/addon-essentials"
   ],
-  core: {
-    builder: "webpack5",
-  },
   "framework": "@storybook/vue3",
   webpackFinal: config => {
     config.module.rules.push({
@@ -21,6 +20,19 @@ module.exports = {
         "sass-loader"
       ]
     });
-    return config;
-  },
-}
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, '../src/'),
+      // vue$: 'vue/dist/vue.esm.js',
+    }
+    return config
+  }
+
+  // "webpackFinal": config => {
+  //   return {
+  //     ...config,
+  //     module: {...config.module, rules: custom.module.rules},
+  //     resolve: custom.resolve
+  //   };
+  // }
+};

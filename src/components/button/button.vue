@@ -1,23 +1,51 @@
 <template>
-    <button
-        :class="[
-            'c-button', `theme-green`,
-            {'hover-text': withHoverText}
-        ]"
-        :data-hover-text="btn-text"
-    >
-        <span class="btn-text">
-            <slot></slot>
-        </span>
-    </button>
+  <button
+    :class="[
+      'c-button', `${theme}`, `${size}`,
+      {'hover-text': withHoverText}
+    ]"
+    :data-hover-text="hoverText"
+  >
+    <div class="c-button__loader" v-if="loading">
+      <spiner :color="spinner_white"></spiner>
+    </div>
+    <span class="btn-text">
+      <slot></slot>
+    </span>
+  </button>
 </template>
 
 <script>
+import { spiner } from '../spiner'
 export default {
-  name: 'Button',
+  name: 'XButton',
+  components: {
+    spiner
+  },
+  data () {
+    return {
+      size_s: 'size_s',
+      size_m: 'size_m',
+      theme_grey: 'theme_grey',
+      theme_green: 'theme_green',
+      spinner_white: 'white'
+    }
+  },
   props: {
+    size: {
+      type: String,
+      default: 'size_s'
+    },
+    theme: {
+      type: String,
+      default: 'theme_white'
+    },
     hoverText: {
-      type: String
+      type: String,
+      default: 'default hoverText'
+    },
+    loading: {
+      type: Boolean
     }
   },
   computed: {
@@ -28,4 +56,4 @@ export default {
 }
 </script>
 
-<style lang="scss" src="button.scss" scoped></style>
+<style lang="scss" src="./button.scss" scoped></style>

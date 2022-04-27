@@ -1,20 +1,34 @@
 <template>
-    <button class="c-story-user-item" @click="$emit('onPress')">
-        <div class="avatar">
-            <img :src="avatar" alt="username avatar" class="img" />
-        </div>
-        <div class="username">{{ username }}</div>
-    </button>
+  <button
+    class="c-story-user-item"
+    @click="$emit('onPress')"
+  >
+    <div class="avatar__wrap">
+      <avatar :avatarUrl="avatarUrl" :size="size"></avatar>
+    </div>
+    <div class="username mt-10">{{ username }}</div>
+  </button>
 </template>
 
 <script>
+import { avatar } from '../avatar'
+
 export default {
+  name: 'StoryUserItem',
+  components: {
+    avatar
+  },
+  emits: ['onPress'],
   props: {
-    avatar: {
+    avatarUrl: {
       type: String,
       required: true
     },
     username: {
+      type: String,
+      required: true
+    },
+    size: {
       type: String,
       required: true
     }
@@ -22,4 +36,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped src="./storyUserItem.scss"></style>
+<style lang="scss" src="./storyUserItem.scss" scoped></style>

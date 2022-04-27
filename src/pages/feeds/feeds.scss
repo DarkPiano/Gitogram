@@ -1,10 +1,20 @@
-.heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.stories {
+  overflow: hidden;
+
+  &__item:first-child {
+    margin-left: 0;
+  }
 }
 
-.stories {
-    display: flex;
-    justify-content: space-between;
+.feeds {
+  &__list {
+    width: 979px;
+    margin: 0 auto;
+  }
+
+  &__item {
+    &:first-child {
+      margin-top: 0;
+    }
+  }
 }

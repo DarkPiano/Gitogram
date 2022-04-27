@@ -1,22 +1,26 @@
-import progress from './progress.vue'
+import xProgress from './progress.vue'
 
 export default {
-  title: 'progress',
-  component: progress,
-  argType: {
+  title: 'xProgress',
+  component: { xProgress },
+  argTypes: {
     onFinish: {
       action: 'onFinish',
-      description: 'files when progress reaches the and'
+      description: 'fires when progress reaches the end'
     }
   }
 }
 
 const template = (args) => ({
-  components: { xProgress: progress },
+  components: {
+    xProgress
+  },
   data () {
     return { args }
   },
-  template: '<x-progress @onFinish="args.onFinish" />'
+  template: `
+    <x-progress @onFinish="args.onFinish"></x-progress>
+  `
 })
 
 export const Default = template.bind({})

@@ -1,11 +1,9 @@
 <template>
-  <div class="x-container">
-    <div class="c-comment">
-      <p>
-        <span class="username">{{ username }}</span>
-          {{ text }}
-      </p>
-    </div>
+  <div class="c-comment">
+    <p>
+      <span class="username">{{ username }}</span>
+      {{ text }}
+    </p>
   </div>
 </template>
 
@@ -15,11 +13,13 @@ export default {
   props: {
     username: {
       type: String,
-      required: true
+      required: true,
+      default: 'Default User'
     },
     text: {
       type: String,
-      required: true
+      required: true,
+      default: 'Default comment text'
     }
   }
 }

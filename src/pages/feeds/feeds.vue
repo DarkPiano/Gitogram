@@ -2,83 +2,116 @@
   <div class="topline">
     <topline>
       <template #headline>
-        <div class="heading">
-          <div class="logo">
-            <icon name="logo" />
-          </div>
-          <div class="icon">
-            <icon name="home" />
-            <icon name="photo" />
-            <icon name="exit" />
-          </div>
-        </div>
+        <x-header></x-header>
       </template>
       <template #content>
-        <ul class="stories">
-          <li class="stories-item" v-for="story in stories" :key="story.id">
-            <story-user-item
-              :avatar="story.avatar"
-              :username="story.username"
-              @onPress="handlePress(story.id)"
-            />
-          </li>
-        </ul>
+        <div class="stories">
+          <ul class="stories__list fl">
+            <li
+              class="stories__item mr-15 ml-15"
+              v-for="{ id, owner } in trendings"
+              :key="id"
+            >
+              <story-user-item
+                :avatarUrl="owner.avatar_url"
+                :username="owner.login"
+                :size="avatar_l"
+                @onPress="$router.push({name: 'storiesPage', params: { initialSlide: id } })"
+              ></story-user-item>
+            </li>
+          </ul>
+        </div>
       </template>
     </topline>
   </div>
-  <div class="feed">
-    <toggler @onToggle="toggle" />
-    <div class="comments" v-if="shown">
-      <ul class="cooments-lists">
-        <li class="comments-item" v-for="n in 3" :key="n">
-          <comment text="Some text" username="John Doe" />
-        </li>
-      </ul>
-    </div>
+  <div class="feeds">
+    <ul class="feeds__list">
+      <li
+        class="feeds__item mt-24"
+        v-for="{ id, owner, name, description, stargazers_count, forks_count, issues, created_at } in starred"
+        :key="id"
+      >
+        <feed-item
+          :avatarUrl="owner.avatar_url"
+          :username="owner.login"
+          :issues="issues?.data"
+          :date="new Date(created_at)"
+          :loading="issues?.loading"
+          @loadContent="loadIssues({ id, owner: owner.login, repo: name })"
+        >
+          <template #card>
+            <card
+              :title="name"
+              :description="description"
+              :stars="stargazers_count"
+              :forks="forks_count"
+            ></card>
+          </template>
+        </feed-item>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
+import * as api from '../../api'
+import { xHeader } from '../../components/header'
 import { topline } from '../../components/topline'
 import { storyUserItem } from '../../components/storyUserItem'
-import { icon } from '../../components/icons'
-import { toggler } from '../../components/toggler'
-import { comment } from '../../components/comment'
-import stories from './data.json'
-import * as api from '../../components/api/reset'
+import stories from './dataUsers.json'
+import { feedItem } from '../../components/feed'
+import { card } from '../../components/card'
 
 export default {
-  name: 'feeds',
+  name: 'Feeds',
   components: {
+    xHeader,
     topline,
     storyUserItem,
-    icon,
-    toggler,
-    comment
+    feedItem,
+    card
   },
   data () {
     return {
+      items: [],
       stories,
-      shown: false,
-      items: []
+      avatar_s: 'avatar_s',
+      avatar_m: 'avatar_m',
+      avatar_l: 'avatar_l',
+      logo_white: 'logo_white',
+      logo_black: 'logo_black'
     }
   },
+  computed: {
+    ...mapState({
+      trendings: (state) => state.trendings.data,
+      starred: (state) => state.starred.data
+    })
+  },
   methods: {
-    toggle (isOpened) {
-      this.shown = isOpened
+    ...mapActions({
+      fetchTrendings: 'trendings/fetchTrendings',
+      fetchStarred: 'starred/fetchStarred',
+      fetchIssuesForRepo: 'starred/fetchIssuesForRepo'
+    }),
+    loadIssues ({ id, owner, repo }) {
+      this.fetchIssuesForRepo({ id, owner, repo })
     }
   },
   async created () {
     try {
-      const { data } = await api.trandings.getTrendings()
-
+      const { data } = await api.trendings.getTrendings()
       this.items = data.items
     } catch (error) {
       console.log(error)
     }
+  },
+  mounted () {
+    this.fetchTrendings()
+    this.fetchStarred({ limit: 10 })
   }
 }
 </script>
 
-<style lang="scss" src="./icons.scss" scoped></style>
 <style lang="scss" src="./feeds.scss" scoped></style>
